@@ -3,517 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIPHER | Restricted Access Portfolio v3.0</title>
+    <title>CIPHER_OS | Quantum Encrypted Portfolio</title>
     
+    <!-- External Frameworks & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* Premium Shriftlar */
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;700&family=Share+Tech+Mono&family=Inter:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Mono:wght@400;700&family=Outfit:wght@100;400;900&display=swap');
 
         :root {
-            /* Neon Ranglar */
-            --cyan-neon: #00f2ff;
-            --purple-neon: #a020f0;
-            --bg-black: #000000; /* Mutlaqo qora fon */
-            --card-dark: #0a0a0a;
-            --text-main: #ffffff;
-            --text-secondary: #888888;
-            --shadow-neon: 0 0 15px rgba(0, 242, 255, 0.7), 0 0 25px rgba(0, 242, 255, 0.4);
-            --transition-smooth: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --neon-cyan: #00f2ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff003c;
+            --bg-deep-black: #020202;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --border-white: rgba(255, 255, 255, 0.1);
+            --font-main: 'Outfit', sans-serif;
+            --font-mono: 'Space Mono', monospace;
         }
 
-        /* --- Global Sozlamalar --- */
+        /* --- GLOBAL RESET & DARK THEME --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Custom Cursor */
+            cursor: none !important; /* Premium Custom Cursor */
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-black);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep-black);
+            color: #ffffff;
+            font-family: var(--font-main);
             overflow-x: hidden;
+            user-select: none; /* Ma'lumotlarni nusxalashni cheklash (Hacker style) */
         }
 
-        /* --- Custom Scrollbar (Premium Dark) --- */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #050505;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--purple-neon), var(--cyan-neon));
+        /* --- CUSTOM SCROLLBAR (CYBER STYLE) --- */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-purple)); 
             border-radius: 10px;
         }
 
-        /* --- Custom Cursor --- */
-        #custom-cursor {
-            width: 15px;
-            height: 15px;
-            background: var(--cyan-neon);
-            border-radius: 50%;
+        /* --- CURSOR SYSTEM --- */
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--neon-cyan);
             position: fixed;
+            z-index: 10000;
+            border-radius: 50%;
             pointer-events: none;
+            box-shadow: 0 0 15px var(--neon-cyan);
+            transition: transform 0.1s;
+        }
+
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--neon-purple);
+            position: fixed;
             z-index: 9999;
-            box-shadow: var(--shadow-neon);
-            transform: translate(-50%, -50%);
-            transition: width 0.1s, height 0.1s;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: all 0.15s ease-out;
+            box-shadow: 0 0 10px var(--neon-purple);
         }
 
-        #custom-cursor.hover {
-            width: 30px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            mix-blend-mode: difference;
+        /* --- PREMIUM ANIMATIONS --- */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
 
-        /* --- UI Elementlari (Premium Dark) --- */
-        .cyber-card {
-            background: var(--card-dark);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            position: relative;
-            transition: var(--transition-smooth);
-            overflow: hidden;
-        }
-
-        .cyber-card:hover {
-            border-color: var(--cyan-neon);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
-            transform: translateY(-5px) scale(1.01);
-        }
-
-        .cyber-card::before {
-            content: '';
-            position: absolute;
+        .scanline {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--purple-neon), var(--cyan-neon));
-            opacity: 0.5;
-            transition: 0.3s;
-        }
-        .cyber-card:hover::before { opacity: 1; }
-
-        .neon-title {
-            font-family: 'Chakra Petch', sans-serif;
-            color: #ffffff;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.05), transparent);
+            z-index: 9998;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
         }
 
-        .cyan-glow {
-            color: var(--cyan-neon);
-            text-shadow: var(--shadow-neon);
+        /* --- COMPONENTS --- */
+        .cyber-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border-white);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .mono {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-secondary);
+        .cyber-panel:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
+            transform: translateY(-5px);
         }
 
-        .btn-cyber {
-            font-family: 'Chakra Petch', sans-serif;
+        .neon-btn {
+            padding: 12px 30px;
             background: transparent;
-            border: 2px solid var(--purple-neon);
-            color: var(--purple-neon);
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            font-size: 12px;
             letter-spacing: 2px;
-            font-size: 0.8rem;
+            text-transform: uppercase;
             position: relative;
             overflow: hidden;
             transition: 0.3s;
         }
 
-        .btn-cyber:hover {
-            background: var(--purple-neon);
-            color: #fff;
-            box-shadow: 0 0 30px rgba(160, 32, 240, 0.6);
+        .neon-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-cyan);
         }
 
-        /* --- Matrix Code Background --- */
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.03; /* Juda yengil fon */
+        .tag-pill {
+            background: rgba(188, 19, 254, 0.1);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            color: var(--neon-purple);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-family: var(--font-mono);
+            margin: 5px;
         }
 
-        /* --- Hidden Admin Panel Styles --- */
-        #admin-panel {
+        /* --- ADMIN PANEL (HIDDEN OVERLAY) --- */
+        #master-admin {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 90%;
-            max-width: 900px;
-            height: 80vh;
-            background: #020202;
-            border: 2px solid var(--cyan-neon);
-            box-shadow: 0 0 100px rgba(0, 242, 255, 0.3);
-            border-radius: 20px;
-            z-index: 9000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s ease-in-out;
-            padding: 40px;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 10001;
+            display: none;
+            padding: 50px;
             overflow-y: auto;
-        }
-
-        #admin-panel.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
+            border: 2px solid var(--neon-cyan);
+            animation: fadeIn 0.5s;
         }
 
         .admin-input {
-            background: #0a0a0a !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            color: #fff !important;
-            border-radius: 8px;
-            padding: 12px;
             width: 100%;
-            margin-bottom: 20px;
-            font-family: 'Inter', sans-serif;
-            transition: 0.3s;
-        }
-        
-        .admin-input:focus {
-            border-color: var(--cyan-neon);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
-            outline: none;
-        }
-
-        .btn-save-cyber {
-            font-family: 'Chakra Petch', sans-serif;
-            background: linear-gradient(90deg, var(--purple-neon), var(--cyan-neon));
+            background: #0a0a0a;
+            border: 1px solid #333;
             padding: 15px;
-            border-radius: 10px;
-            color: #000;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            width: 100%;
-            transition: 0.3s;
-        }
-        .btn-save-cyber:hover {
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
-            transform: scale(1.02);
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            margin-bottom: 20px;
+            border-radius: 8px;
         }
 
-        /* --- Section Separator (Neon Line) --- */
-        .neon-hr {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            border: none;
-            margin: 60px 0;
+        /* --- LOADER --- */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10002;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* --- Skill Tags --- */
-        .skill-tag {
-            font-family: 'Share Tech Mono', monospace;
-            background: rgba(160, 32, 240, 0.05);
-            border: 1px solid rgba(160, 32, 240, 0.2);
-            color: #b080ff;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            margin: 6px;
-            transition: 0.3s;
-            display: inline-block;
-        }
-        .skill-tag:hover {
-            background: var(--purple-neon);
-            color: #fff;
-            box-shadow: 0 0 20px rgba(160, 32, 240, 0.4);
-            border-color: var(--purple-neon);
+        /* --- MUSIC PLAYER COMPONENT --- */
+        .music-widget {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 50px;
+            border: 1px solid var(--neon-purple);
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
     </style>
 </head>
-<body class="animate__animated animate__fadeIn">
+<body>
 
-    <div id="custom-cursor"></div>
-    <canvas id="matrix-canvas"></canvas>
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="text-3xl font-black neon-text mb-4 animate-pulse">BOOTING CIPHER_OS...</div>
+        <div class="w-64 h-1 bg-gray-900 rounded-full overflow-hidden">
+            <div id="load-bar" class="h-full bg-cyan-400" style="width: 0%"></div>
+        </div>
+        <div id="load-text" class="mt-4 font-mono text-xs text-cyan-700">Loading kernel modules...</div>
+    </div>
 
-    <nav class="w-full px-10 py-6 fixed top-0 left-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center">
-        <div class="neon-title text-3xl">C<span class="cyan-glow">IP</span>HER<span class="mono text-xs opacity-50"> // v3.0</span></div>
-        <div class="mono space-x-8 text-sm tracking-widest hidden md:flex">
-            <a href="#about" class="hover-item hover:text-cyan-400 transition">01. ABOUT</a>
-            <a href="#projects" class="hover-item hover:text-cyan-400 transition">02. PROJECTS</a>
-            <a href="#status" class="hover-item hover:text-cyan-400 transition">03. STATUS</a>
-            <a href="#" onclick="showAdminHint()" class="hover-item opacity-20 hover:opacity-100"><i class="fa-solid fa-ghost"></i></a>
+    <!-- CUSTOM CURSOR -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+    
+    <!-- SCANLINE EFFECT -->
+    <div class="scanline"></div>
+
+    <!-- BACKGROUND PARTICLES -->
+    <div id="particles-js" class="fixed inset-0 z-[-1]"></div>
+
+    <!-- HEADER / NAVIGATION -->
+    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-50 backdrop-blur-md border-b border-white/5">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-purple-600 rounded-lg flex items-center justify-center font-black">C</div>
+            <span class="font-bold tracking-[8px] text-sm md:text-base">CIPHER_SYSTEM</span>
+        </div>
+        <div class="hidden lg:flex gap-12 font-mono text-[10px] tracking-widest text-gray-500">
+            <a href="#home" class="hover:text-cyan-400 transition">01. OVERVIEW</a>
+            <a href="#stats" class="hover:text-cyan-400 transition">02. CAPABILITIES</a>
+            <a href="#archive" class="hover:text-cyan-400 transition">03. ARCHIVE</a>
+            <button onclick="triggerAuth()" class="opacity-20 hover:opacity-100"><i class="fas fa-terminal"></i></button>
         </div>
     </nav>
 
-    <main class="container mx-auto px-6 mt-32 pb-20">
-        
-        <section id="about" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24 animate__animated animate__fadeInUp">
-            
-            <div class="lg:col-span-8 cyber-card p-12 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-3 mono text-xs text-green-500 bg-black border border-white/5 opacity-50">MODE: Ethical Hacking Active</div>
-                
-                <h4 class="mono text-cyan-400 text-sm mb-2 tracking-[5px] uppercase">> IDENTITY_CONFIRMED</h4>
-                <h1 class="text-6xl font-black mb-6 leading-tight neon-title">
-                    Sizning g‘oyangizni <br>
-                    <span id="typed-text" class="cyan-glow"></span>
-                </h1>
-                
-                <p id="display-about" class="text-gray-400 text-xl leading-relaxed max-w-2xl mb-10">
-                    Men 8-sinf o'quvchisi bo'lsam-da, Full-stack dasturlash va kiberxavfsizlik olamida professional tajribaga egaman. 
-                    Mening maqsadim - "Premium Ultra-Dark" dizaynli loyihalar orqali brendingizni professionallar kabi internetga olib chiqish.
-                </p>
+    <!-- MUSIC PLAYER -->
+    <div class="music-widget group">
+        <div class="w-10 h-10 bg-purple-900 rounded-full flex items-center justify-center animate-spin">
+            <i class="fas fa-compact-disc"></i>
+        </div>
+        <div class="text-[10px] font-mono mr-4">
+            <div class="text-purple-400">CURRENT_PLAYING:</div>
+            <div id="song-name">Phonk Night_Mix.mp3</div>
+        </div>
+        <button id="play-btn" class="text-white hover:text-cyan-400"><i class="fas fa-play"></i></button>
+    </div>
 
-                <div class="mt-12 pt-10 border-t border-white/5">
-                    <h5 class="mono text-purple-400 text-xs mb-6 tracking-[3px] uppercase">// TECH_STACK KO'NIKMALAR</h5>
-                    <div id="display-skills" class="flex flex-wrap">
-                        </div>
-                </div>
+    <!-- HERO SECTION -->
+    <section id="home" class="min-h-screen flex flex-col justify-center items-center pt-32 px-6">
+        <div class="text-center">
+            <h4 class="font-mono text-cyan-500 mb-6 tracking-[10px] uppercase text-xs">Access Granted // Identity Confirmed</h4>
+            <h1 id="main-name" class="text-7xl md:text-9xl font-black tracking-tighter mb-8 bg-gradient-to-b from-white to-gray-700 bg-clip-text text-transparent">
+                CIPHER
+            </h1>
+            <div class="text-2xl md:text-4xl font-light mb-12 h-16">
+                <span id="typewriter"></span>
             </div>
+            
+            <div class="flex flex-wrap justify-center gap-6">
+                <button class="neon-btn">Download Protocol</button>
+                <button class="neon-btn" style="border-color: var(--neon-purple); color: var(--neon-purple);">Contact Admin</button>
+            </div>
+        </div>
 
-            <div class="lg:col-span-4 space-y-8 flex flex-col items-center">
-                <div class="cyber-card p-10 text-center flex flex-col items-center relative group w-full">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-cyan-400 rounded-[20px] blur opacity-10 group-hover:opacity-30 transition duration-1000"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="w-44 h-44 rounded-full p-2 border-2 border-dashed border-cyan-400 mb-8 relative">
-                            <div class="w-full h-full bg-black rounded-full flex items-center justify-center text-6xl shadow-[0_0_50px_rgba(0,242,255,0.3)]">
-                                👨‍💻
-                            </div>
-                        </div>
-                        <h2 id="display-name" class="text-4xl font-black neon-title mb-2">CIPHER</h2>
-                        <p class="text-cyan-500 mono text-xs mt-2 uppercase tracking-[4px]">Status: Encrypted</p>
-                        
-                        <div class="flex justify-center space-x-6 mt-10">
-                            <a href="#" class="hover-item text-3xl text-gray-600 hover:text-white transition"><i class="fa-brands fa-github"></i></a>
-                            <a href="https://t.me/logo_designer21" class="hover-item text-3xl text-cyan-600 hover:text-cyan-300 transition"><i class="fa-brands fa-telegram"></i></a>
-                            <a href="#" class="hover-item text-3xl text-purple-600 hover:text-purple-300 transition"><i class="fa-brands fa-discord"></i></a>
-                        </div>
+        <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+            <div class="cyber-panel">
+                <div class="text-cyan-400 font-mono text-xs mb-4">LOG_01 // WEB_DEV</div>
+                <h3 class="text-xl font-bold mb-4 uppercase">Full-Stack Architecture</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    Next.js, Node.js va PostgreSQL yordamida "Premium" darajadagi, yuqori darajadagi himoyalangan veb-tizimlar qurish.
+                </p>
+            </div>
+            <div class="cyber-panel">
+                <div class="text-purple-400 font-mono text-xs mb-4">LOG_02 // CYBER_SEC</div>
+                <h3 class="text-xl font-bold mb-4 uppercase">Penetration Testing</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    Veb ilovalar va tarmoqlarni zaifliklarga tekshirish, "Black Hat" metodlaridan himoya qilish va tizim auditini o'tkazish.
+                </p>
+            </div>
+            <div class="cyber-panel">
+                <div class="text-red-400 font-mono text-xs mb-4">LOG_03 // GAME_DEV</div>
+                <h3 class="text-xl font-bold mb-4 uppercase">Unreal Engine & C++</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    AAA klassidagi o'yin mexanikalari, Unreal Engine 5 va Minecraft/Roblox uchun ilg'or skriptlar yaratish.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS / CHART SECTION -->
+    <section id="stats" class="py-32 px-6 bg-black/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-5xl font-black mb-8 uppercase">Skill <span class="text-cyan-500">Distribution</span></h2>
+                    <p class="text-gray-500 mb-10 leading-relaxed">
+                        Mening bilimlarim nafaqat kodlashda, balki tizimlarni loyihalash va ularni xavfsizligini ta'minlashda ham namoyon bo'ladi. Har bir dars va tajriba meni kiber-olam cho'qqisiga yaqinlashtiradi.
+                    </p>
+                    <div id="skills-list" class="flex flex-wrap">
+                        <!-- Dynamic Skills -->
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <hr class="neon-hr">
-
-        <section id="projects" class="grid grid-cols-1 md:grid-cols-3 gap-10 animate__animated animate__fadeInUp animate__delay-1s">
-            <div class="cyber-card p-10 group">
-                <i class="fa-solid fa-code text-4xl text-cyan-400 mb-6 group-hover:animate-pulse"></i>
-                <h3 class="neon-title text-xl mb-3">Veb Arxitektura</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Next.js va Node.js bazasida murakkab, yuqori yuklamaga chidamli va tezkor tizimlar.</p>
-                <div class="mt-6 mono text-xs text-cyan-800">> stack: react, next, node, postgres</div>
-            </div>
-            <div class="cyber-card p-10 group">
-                <i class="fa-solid fa-shield-halved text-4xl text-purple-500 mb-6 group-hover:scale-110 transition"></i>
-                <h3 class="neon-title text-xl mb-3">Kiberxavfsizlik</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Penetration testing, veb-ilovalarni zaifliklardan himoya qilish va Ethical Hacking.</p>
-                <div class="mt-6 mono text-xs text-purple-800">> tools: kali, burpsuite, nmap, owasp</div>
-            </div>
-            <div class="cyber-card p-10 group">
-                <i class="fa-solid fa-gamepad text-4xl text-green-400 mb-6 group-hover:rotate-12 transition"></i>
-                <h3 class="neon-title text-xl mb-3">O‘yin Dasturlash</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Unreal Engine 5 va C++ orqali zamonaviy o‘yinlar, server scriptlari (Minecraft/Roblox).</p>
-                <div class="mt-6 mono text-xs text-green-800">> tools: ue5, c++, lua, blender</div>
-            </div>
-        </section>
-
-        <hr class="neon-hr">
-
-        <section id="status" class="cyber-card p-10 animate__animated animate__fadeInUp animate__delay-1s">
-            <h3 class="neon-title text-2xl mb-10 flex items-center">
-                <span class="w-3 h-3 bg-cyan-500 rounded-full animate-ping mr-4"></span>
-                Loyihalar Holati // Status
-            </h3>
-            <div class="space-y-6">
-                <div>
-                    <div class="flex justify-between mono text-sm mb-2"><span>StudySnap [Wikipedia AI]</span> <span class="text-cyan-400">85% // Building</span></div>
-                    <div class="w-full h-1.5 bg-gray-900 rounded-full"><div class="h-full bg-cyan-500 rounded-full" style="width: 85%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between mono text-sm mb-2"><span>Velocity Type</span> <span class="text-green-500">100% // Done</span></div>
-                    <div class="w-full h-1.5 bg-gray-900 rounded-full"><div class="h-full bg-green-500 rounded-full" style="width: 100%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between mono text-sm mb-2"><span>Hidden Private Tool</span> <span class="text-purple-500">60% // Testing</span></div>
-                    <div class="w-full h-1.5 bg-gray-900 rounded-full"><div class="h-full bg-purple-500 rounded-full" style="width: 60%"></div></div>
+                <div class="cyber-panel p-10">
+                    <canvas id="skillsChart"></canvas>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
-
-    <footer class="w-full text-center p-10 border-t border-white/5 mono text-xs text-gray-700">
-        &copy; 2026 Cipher Digital Systems. All Rights Reserved. Restricted Access area.
+    <!-- FOOTER -->
+    <footer class="p-20 border-t border-white/5 text-center">
+        <div class="text-5xl font-black mb-8 opacity-10">CIPHER</div>
+        <div class="flex justify-center gap-10 text-gray-600 mb-10">
+            <a href="https://t.me/logo_designer21" class="hover:text-cyan-400"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="hover:text-cyan-400"><i class="fab fa-github"></i></a>
+            <a href="#" class="hover:text-cyan-400"><i class="fab fa-discord"></i></a>
+        </div>
+        <p class="font-mono text-[10px] text-gray-800 tracking-widest uppercase">
+            System uptime: 2026.03.31 // Created by Cipher Digital
+        </p>
     </footer>
 
-    <div id="admin-panel">
-        <div class="flex justify-between items-center mb-10 border-b border-white/10 pb-5">
-            <h2 class="neon-title text-2xl cyan-glow">TIZIMNI TAHRIRLASH // Core Override</h2>
-            <button onclick="closeAdmin()" class="hover-item text-gray-500 hover:text-white text-3xl">&times;</button>
-        </div>
-        
-        <div class="space-y-4">
-            <label class="mono text-xs text-gray-500 uppercase tracking-widest">Profilingiz nomi</label>
-            <input type="text" id="edit-name" class="admin-input" placeholder="Masalan: CIPHER">
+    <!-- HIDDEN MASTER ADMIN OVERLAY -->
+    <div id="master-admin">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-16 border-b border-cyan-500/20 pb-8">
+                <h2 class="text-4xl font-black text-cyan-400">CORE_OVERRIDE_PANEL</h2>
+                <button onclick="closeAdmin()" class="text-gray-500 hover:text-white text-3xl">&times;</button>
+            </div>
             
-            <label class="mono text-xs text-gray-500 uppercase tracking-widest">Men haqimda (Malumot)</label>
-            <textarea id="edit-about" rows="5" class="admin-input" placeholder="Malumot..."></textarea>
-            
-            <label class="mono text-xs text-gray-500 uppercase tracking-widest">Ko'nikmalar (Vergul bilan ajrating)</label>
-            <input type="text" id="edit-skills" class="admin-input" placeholder="React, Node, Cybersecurity">
-            
-            <button onclick="saveChanges()" class="btn-save-cyber mt-10 hover-item">TIZIMNI YANGILASH (DEPLOY)</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div>
+                    <label class="block font-mono text-xs text-gray-600 mb-3 uppercase">Profile Name</label>
+                    <input type="text" id="admin-name" class="admin-input">
+
+                    <label class="block font-mono text-xs text-gray-600 mb-3 uppercase">About Description</label>
+                    <textarea id="admin-about" class="admin-input" rows="5"></textarea>
+                </div>
+                <div>
+                    <label class="block font-mono text-xs text-gray-600 mb-3 uppercase">Skills (Comma separated)</label>
+                    <input type="text" id="admin-skills" class="admin-input">
+
+                    <label class="block font-mono text-xs text-gray-600 mb-3 uppercase">Project Stats (JSON Style)</label>
+                    <textarea id="admin-projects" class="admin-input" rows="5"></textarea>
+                </div>
+            </div>
+
+            <button onclick="applyOverride()" class="w-full mt-12 bg-cyan-600 py-5 font-black text-black hover:bg-cyan-400 transition">DEPLOY CHANGES TO CORE</button>
         </div>
     </div>
 
+    <!-- CORE SCRIPTING (THE ENGINE) -->
     <script>
-        // --- Core Data Logic (localStorage) ---
-        let portfolioData = JSON.parse(localStorage.getItem('cipher_dark_data')) || {
+        // --- 1. PRELOADER LOGIC ---
+        let loadPercent = 0;
+        const loadInt = setInterval(() => {
+            loadPercent += Math.floor(Math.random() * 10);
+            if(loadPercent >= 100) {
+                loadPercent = 100;
+                clearInterval(loadInt);
+                setTimeout(() => {
+                    document.getElementById('preloader').style.display = 'none';
+                }, 1000);
+            }
+            document.getElementById('load-bar').style.width = loadPercent + '%';
+            document.getElementById('load-text').innerText = `Loading module_${loadPercent}...`;
+        }, 80);
+
+        // --- 2. LOCAL STORAGE & DATA ---
+        let coreData = JSON.parse(localStorage.getItem('cipher_master_data')) || {
             name: "CIPHER",
-            about: "Men 8-sinf o'quvchisi bo'lsam-da, Full-stack dasturlash va kiberxavfsizlik olamida professional tajribaga egaman. Mening maqsadim - \"Premium Ultra-Dark\" dizaynli loyihalar orqali brendingizni professionallar kabi internetga olib chiqish.",
-            skills: ["React", "Next.js", "Node.js", "PostgreSQL", "Tailwind", "Cybersecurity", "UE5", "C++"]
+            about: "Men 8-sinf o'quvchisi bo'lsam-da, Full-stack dasturlash va kiberxavfsizlik olamida professional tajribaga egaman.",
+            skills: ["React", "Node.js", "Python", "Ethical Hacking", "UE5", "PostgreSQL", "Tailwind"],
+            stats: [85, 90, 75, 95, 70, 80, 88]
         };
 
-        // UI ni yangilash funksiyasi
-        function updateUI() {
-            document.getElementById('display-name').innerText = portfolioData.name;
-            document.getElementById('display-about').innerText = portfolioData.about;
+        function syncUI() {
+            document.getElementById('main-name').innerText = coreData.name;
+            document.getElementById('admin-name').value = coreData.name;
+            document.getElementById('admin-about').value = coreData.about;
+            document.getElementById('admin-skills').value = coreData.skills.join(', ');
             
-            // Skills tags yuklash
-            const skillsDiv = document.getElementById('display-skills');
-            skillsDiv.innerHTML = '';
-            portfolioData.skills.forEach(s => {
-                skillsDiv.innerHTML += `<span class="skill-tag">${s}</span>`;
+            const list = document.getElementById('skills-list');
+            list.innerHTML = '';
+            coreData.skills.forEach(s => {
+                list.innerHTML += `<span class="tag-pill">${s}</span>`;
             });
-
-            // Admin panel inputlarini to'ldirish
-            document.getElementById('edit-name').value = portfolioData.name;
-            document.getElementById('edit-about').value = portfolioData.about;
-            document.getElementById('edit-skills').value = portfolioData.skills.join(', ');
+            initChart();
         }
 
-        // O'zgarishlarni saqlash funksiyasi
-        function saveChanges() {
-            portfolioData.name = document.getElementById('edit-name').value;
-            portfolioData.about = document.getElementById('edit-about').value;
-            portfolioData.skills = document.getElementById('edit-skills').value.split(',').map(s => s.trim());
+        // --- 3. CURSOR LOGIC ---
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
 
-            localStorage.setItem('cipher_dark_data', JSON.stringify(portfolioData));
-            updateUI();
-            
-            Swal.fire({
-                title: 'DEPLOY SUCCESS!',
-                text: 'Tizim ma\'lumotlari yangilandi.',
-                icon: 'success',
-                background: '#0a0a0a',
-                color: '#fff',
-                confirmButtonColor: '#00f2ff',
-                confirmButtonText: 'OK'
-            });
-            
-            setTimeout(closeAdmin, 500);
-        }
-
-        // --- Hidden Admin Trigger Logic ---
-        // Klaviaturadan 'cipher' deb yozsangiz panel ochiladi
-        let keyBuffer = "";
-        window.addEventListener('keydown', (e) => {
-            keyBuffer += e.key.toLowerCase();
-            if (keyBuffer.includes("cipher")) {
-                document.getElementById('admin-panel').classList.add('active');
-                keyBuffer = "";
-            }
-            if (keyBuffer.length > 10) keyBuffer = ""; // Buffer tozalash
+        window.addEventListener('mousemove', (e) => {
+            dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            outline.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
         });
+
+        // --- 4. PARTICLES.JS ---
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80 },
+                "color": { "value": "#00f2ff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.2 },
+                "size": { "value": 1.5 },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#00f2ff",
+                    "opacity": 0.1,
+                    "width": 1
+                },
+                "move": { "speed": 1 }
+            }
+        });
+
+        // --- 5. CHART.JS ---
+        let myChart;
+        function initChart() {
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: coreData.skills,
+                    datasets: [{
+                        label: 'SKILL_LEVEL',
+                        data: coreData.stats,
+                        backgroundColor: 'rgba(0, 242, 255, 0.1)',
+                        borderColor: '#00f2ff',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#bc13fe'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            angleLines: { color: 'rgba(255,255,255,0.05)' },
+                            pointLabels: { color: '#888', font: { size: 10 } },
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // --- 6. TYPEWRITER ---
+        new Typed('#typewriter', {
+            strings: [
+                'Full-Stack Developer', 
+                'Cyber Security Expert', 
+                'UI/UX Designer', 
+                'Unreal Engine Creator', 
+                'Black Hat Defender'
+            ],
+            typeSpeed: 60,
+            backSpeed: 40,
+            loop: true
+        });
+
+        // --- 7. ADMIN SECURITY ---
+        let authBuffer = "";
+        window.addEventListener('keydown', (e) => {
+            authBuffer += e.key.toLowerCase();
+            if(authBuffer.includes("cipherkey")) {
+                openAdmin();
+                authBuffer = "";
+            }
+            if(authBuffer.length > 20) authBuffer = "";
+        });
+
+        function openAdmin() {
+            document.getElementById('master-admin').style.display = 'block';
+        }
 
         function closeAdmin() {
-            document.getElementById('admin-panel').classList.remove('active');
+            document.getElementById('master-admin').style.display = 'none';
         }
 
-        function showAdminHint() {
+        function triggerAuth() {
             Swal.fire({
-                title: 'RESTRICTED AREA',
-                text: 'Admin panelga kirish uchun maxsus kalit so\'zni klaviaturada tering.',
-                icon: 'warning',
+                title: 'SYSTEM AUTHENTICATION',
+                text: "Admin panelga kirish uchun klaviaturada 'cipherkey' so'zini tering.",
+                icon: 'info',
                 background: '#000',
                 color: '#fff',
-                confirmButtonColor: '#a020f0'
+                confirmButtonColor: '#bc13fe'
             });
         }
 
-        // --- Premium Custom Cursor Logic ---
-        const cursor = document.getElementById('custom-cursor');
-        window.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        // Hover effect for cursor
-        document.querySelectorAll('a, button, .hover-item, .cyber-card').forEach(item => {
-            item.addEventListener('mouseover', () => cursor.classList.add('hover'));
-            item.addEventListener('mouseout', () => cursor.classList.remove('hover'));
-        });
-
-        // --- Matrix Code Background Effect ---
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        let columns = Math.floor(width / 20);
-        const drops = [];
-        const charSet = "01アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン";
-
-        for (let i = 0; i < columns; i++) drops[i] = 1;
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, width, height);
+        function applyOverride() {
+            coreData.name = document.getElementById('admin-name').value;
+            coreData.about = document.getElementById('admin-about').value;
+            coreData.skills = document.getElementById('admin-skills').value.split(',').map(s => s.trim());
             
-            ctx.fillStyle = '#0F0'; // Yashil kodlar
-            ctx.font = '15px Share Tech Mono';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = charSet[Math.floor(Math.random() * charSet.length)];
-                ctx.fillText(text, i * 20, drops[i] * 20);
-                
-                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
+            localStorage.setItem('cipher_master_data', JSON.stringify(coreData));
+            syncUI();
+            
+            Swal.fire({
+                title: 'CORE UPDATED',
+                text: 'Barcha ma\'lumotlar muvaffaqiyatli yangilandi.',
+                icon: 'success',
+                background: '#000',
+                color: '#fff'
+            });
+            closeAdmin();
         }
 
-        function animateMatrix() {
-            drawMatrix();
-            requestAnimationFrame(animateMatrix);
-        }
-
-        animateMatrix();
-
-        // --- Typed.js Effect (Premium Title) ---
-        new Typed('#typed-text', {
-            strings: ['HAQIQATGA AYLANTIRAMAN.', 'XAVFSIZ QILAMAN.', 'PREMIUM DARAJAGA OLIB CHIQAMAN.'],
-            typeSpeed: 50,
-            backSpeed: 30,
-            loop: true,
-            colors: ['#00f2ff']
+        // --- 8. MUSIC PLAYER LOGIC ---
+        let playing = false;
+        const playBtn = document.getElementById('play-btn');
+        // Haqiqiy musiqa bo'lmasa-da, interfeys ishlashi uchun:
+        playBtn.addEventListener('click', () => {
+            playing = !playing;
+            playBtn.innerHTML = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+            Swal.fire({
+                toast: true,
+                position: 'bottom-end',
+                title: playing ? 'Phonk playing...' : 'Audio paused',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#000',
+                color: '#bc13fe'
+            });
         });
 
-        // Dastlabki yuklash
-        updateUI();
+        // INIT
+        syncUI();
     </script>
 </body>
 </html>
