@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cipher | Private Portfolio v2.0</title>
+    <title>CIPHER | Restricted Access Portfolio v3.0</title>
     
-    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500&family=Inter:wght@300;400;700&display=swap');
+        /* Premium Shriftlar */
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;700&family=Share+Tech+Mono&family=Inter:wght@300;400;700&display=swap');
 
         :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg-dark: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.6);
+            /* Neon Ranglar */
+            --cyan-neon: #00f2ff;
+            --purple-neon: #a020f0;
+            --bg-black: #000000; /* Mutlaqo qora fon */
+            --card-dark: #0a0a0a;
+            --text-main: #ffffff;
+            --text-secondary: #888888;
+            --shadow-neon: 0 0 15px rgba(0, 242, 255, 0.7), 0 0 25px rgba(0, 242, 255, 0.4);
+            --transition-smooth: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        /* --- Global Sozlamalar --- */
         * {
             margin: 0;
             padding: 0;
@@ -30,373 +36,483 @@
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
+            background-color: var(--bg-black);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(112, 0, 255, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
+        }
+
+        /* --- Custom Scrollbar (Premium Dark) --- */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--purple-neon), var(--cyan-neon));
+            border-radius: 10px;
         }
 
         /* --- Custom Cursor --- */
-        #cursor {
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
+        #custom-cursor {
+            width: 15px;
+            height: 15px;
+            background: var(--cyan-neon);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
+            box-shadow: var(--shadow-neon);
+            transform: translate(-50%, -50%);
+            transition: width 0.1s, height 0.1s;
+        }
+
+        #custom-cursor.hover {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
             mix-blend-mode: difference;
-            transition: transform 0.1s ease;
-            box-shadow: var(--neon-glow);
         }
 
-        /* --- Scrollbar --- */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-
-        /* --- UI Elements --- */
-        .glass-panel {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
+        /* --- UI Elementlari (Premium Dark) --- */
+        .cyber-card {
+            background: var(--card-dark);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px;
+            position: relative;
+            transition: var(--transition-smooth);
+            overflow: hidden;
         }
 
-        .glass-panel:hover {
-            border-color: var(--primary);
+        .cyber-card:hover {
+            border-color: var(--cyan-neon);
             box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
-            transform: scale(1.02);
+            transform: translateY(-5px) scale(1.01);
         }
 
-        .neon-text {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary);
-            text-shadow: var(--neon-glow);
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--purple-neon), var(--cyan-neon));
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+        .cyber-card:hover::before { opacity: 1; }
+
+        .neon-title {
+            font-family: 'Chakra Petch', sans-serif;
+            color: #ffffff;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .cyan-glow {
+            color: var(--cyan-neon);
+            text-shadow: var(--shadow-neon);
         }
 
         .mono {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-secondary);
+        }
+
+        .btn-cyber {
+            font-family: 'Chakra Petch', sans-serif;
+            background: transparent;
+            border: 2px solid var(--purple-neon);
+            color: var(--purple-neon);
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .btn-cyber:hover {
+            background: var(--purple-neon);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(160, 32, 240, 0.6);
+        }
+
+        /* --- Matrix Code Background --- */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.03; /* Juda yengil fon */
         }
 
         /* --- Hidden Admin Panel Styles --- */
         #admin-panel {
             position: fixed;
-            bottom: -100%;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%) scale(0.9);
             width: 90%;
-            max-width: 800px;
-            height: 60vh;
-            background: rgba(10, 10, 15, 0.98);
-            border-top: 2px solid var(--primary);
-            z-index: 1000;
-            padding: 30px;
-            transition: bottom 0.6s ease;
-            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.9);
-            border-radius: 30px 30px 0 0;
+            max-width: 900px;
+            height: 80vh;
+            background: #020202;
+            border: 2px solid var(--cyan-neon);
+            box-shadow: 0 0 100px rgba(0, 242, 255, 0.3);
+            border-radius: 20px;
+            z-index: 9000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease-in-out;
+            padding: 40px;
             overflow-y: auto;
         }
 
         #admin-panel.active {
-            bottom: 0;
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        inputTag, textareaTag {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        .admin-input {
+            background: #0a0a0a !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
             color: #fff !important;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .btn-save {
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            padding: 12px 30px;
-            border-radius: 12px;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        .btn-save:active { transform: scale(0.95); }
-
-        /* --- Background Particles Canvas --- */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-
-        /* --- Animation for Skill Tags --- */
-        .skill-tag {
-            background: rgba(0, 242, 255, 0.05);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 6px 18px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            display: inline-block;
-            margin: 4px;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
             transition: 0.3s;
         }
-
-        .skill-tag:hover {
-            background: var(--primary);
-            color: #000;
-            box-shadow: var(--neon-glow);
+        
+        .admin-input:focus {
+            border-color: var(--cyan-neon);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+            outline: none;
         }
+
+        .btn-save-cyber {
+            font-family: 'Chakra Petch', sans-serif;
+            background: linear-gradient(90deg, var(--purple-neon), var(--cyan-neon));
+            padding: 15px;
+            border-radius: 10px;
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .btn-save-cyber:hover {
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* --- Section Separator (Neon Line) --- */
+        .neon-hr {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            border: none;
+            margin: 60px 0;
+        }
+
+        /* --- Skill Tags --- */
+        .skill-tag {
+            font-family: 'Share Tech Mono', monospace;
+            background: rgba(160, 32, 240, 0.05);
+            border: 1px solid rgba(160, 32, 240, 0.2);
+            color: #b080ff;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin: 6px;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .skill-tag:hover {
+            background: var(--purple-neon);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(160, 32, 240, 0.4);
+            border-color: var(--purple-neon);
+        }
+
     </style>
 </head>
-<body>
+<body class="animate__animated animate__fadeIn">
 
-    <div id="cursor"></div>
-    <canvas id="bg-canvas"></canvas>
+    <div id="custom-cursor"></div>
+    <canvas id="matrix-canvas"></canvas>
 
-    <!-- Navigation -->
-    <nav class="flex justify-between items-center px-10 py-8 animate__animated animate__fadeIn">
-        <div class="neon-text text-2xl font-black">CIPHER<span class="text-white">.SYS</span></div>
-        <div class="space-x-8 hidden md:flex mono text-sm tracking-widest">
-            <a href="#" class="hover:text-cyan-400 transition">01. HOME</a>
-            <a href="#" class="hover:text-cyan-400 transition">02. PROJECTS</a>
-            <a href="#" class="hover:text-cyan-400 transition">03. ARCHIVE</a>
-            <button onclick="toggleAdminPrompt()" class="opacity-30 hover:opacity-100"><i class="fa-solid fa-ghost"></i></button>
+    <nav class="w-full px-10 py-6 fixed top-0 left-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center">
+        <div class="neon-title text-3xl">C<span class="cyan-glow">IP</span>HER<span class="mono text-xs opacity-50"> // v3.0</span></div>
+        <div class="mono space-x-8 text-sm tracking-widest hidden md:flex">
+            <a href="#about" class="hover-item hover:text-cyan-400 transition">01. ABOUT</a>
+            <a href="#projects" class="hover-item hover:text-cyan-400 transition">02. PROJECTS</a>
+            <a href="#status" class="hover-item hover:text-cyan-400 transition">03. STATUS</a>
+            <a href="#" onclick="showAdminHint()" class="hover-item opacity-20 hover:opacity-100"><i class="fa-solid fa-ghost"></i></a>
         </div>
     </nav>
 
-    <main class="container mx-auto px-5 mt-10">
+    <main class="container mx-auto px-6 mt-32 pb-20">
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <section id="about" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24 animate__animated animate__fadeInUp">
             
-            <!-- Left Column: Intro -->
-            <div class="lg:col-span-8 space-y-10">
+            <div class="lg:col-span-8 cyber-card p-12 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 mono text-xs text-green-500 bg-black border border-white/5 opacity-50">MODE: Ethical Hacking Active</div>
                 
-                <section class="glass-panel p-10 animate__animated animate__fadeInLeft">
-                    <div class="flex items-center space-x-3 mb-6">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span class="mono text-xs text-gray-500 ml-4">root@cipher: ~/about_me</span>
-                    </div>
-                    
-                    <h2 class="text-5xl font-black mb-6 leading-tight">
-                        Raqamli olamni <br>
-                        <span id="display-title" class="neon-text">KOD VA DIZAYN</span> bilan quraman.
-                    </h2>
-                    
-                    <p id="display-about" class="text-gray-400 text-xl leading-relaxed max-w-2xl">
-                        Men 8-sinf o'quvchisi bo'lsam-da, Full-stack yo'nalishida professional loyihalar ustida ishlayman. 
-                        Cybersecurity va UI/UX dizaynning kesishgan nuqtasida "Premium" mahsulotlar yaratish men uchun asosiy maqsad.
-                    </p>
+                <h4 class="mono text-cyan-400 text-sm mb-2 tracking-[5px] uppercase">> IDENTITY_CONFIRMED</h4>
+                <h1 class="text-6xl font-black mb-6 leading-tight neon-title">
+                    Sizning g‘oyangizni <br>
+                    <span id="typed-text" class="cyan-glow"></span>
+                </h1>
+                
+                <p id="display-about" class="text-gray-400 text-xl leading-relaxed max-w-2xl mb-10">
+                    Men 8-sinf o'quvchisi bo'lsam-da, Full-stack dasturlash va kiberxavfsizlik olamida professional tajribaga egaman. 
+                    Mening maqsadim - "Premium Ultra-Dark" dizaynli loyihalar orqali brendingizni professionallar kabi internetga olib chiqish.
+                </p>
 
-                    <div class="mt-10 pt-10 border-t border-white/5">
-                        <h4 class="mono text-cyan-400 text-xs mb-6 tracking-widest">TECH_STACK // KO'NIKMALAR</h4>
-                        <div id="display-skills" class="flex flex-wrap">
-                            <!-- JS orqali kiritiladi -->
+                <div class="mt-12 pt-10 border-t border-white/5">
+                    <h5 class="mono text-purple-400 text-xs mb-6 tracking-[3px] uppercase">// TECH_STACK KO'NIKMALAR</h5>
+                    <div id="display-skills" class="flex flex-wrap">
                         </div>
-                    </div>
-                </section>
-
-                <section class="grid grid-cols-1 md:grid-cols-2 gap-8 animate__animated animate__fadeInUp animate__delay-1s">
-                    <div class="glass-panel p-8">
-                        <i class="fa-solid fa-code text-3xl text-cyan-400 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Web Architecture</h3>
-                        <p class="text-gray-500 text-sm">Next.js va Node.js bazasida murakkab, yuqori yuklamaga chidamli tizimlar.</p>
-                    </div>
-                    <div class="glass-panel p-8">
-                        <i class="fa-solid fa-shield-halved text-3xl text-purple-500 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Cyber Security</h3>
-                        <p class="text-gray-500 text-sm">Penetration testing va veb-ilovalarni zaifliklardan himoya qilish (Ethical Hacking).</p>
-                    </div>
-                </section>
+                </div>
             </div>
 
-            <!-- Right Column: Profile Card -->
-            <div class="lg:col-span-4 space-y-8 animate__animated animate__fadeInRight">
-                
-                <div class="glass-panel p-10 text-center relative overflow-hidden group">
-                    <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+            <div class="lg:col-span-4 space-y-8 flex flex-col items-center">
+                <div class="cyber-card p-10 text-center flex flex-col items-center relative group w-full">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-cyan-400 rounded-[20px] blur opacity-10 group-hover:opacity-30 transition duration-1000"></div>
                     
                     <div class="relative z-10">
-                        <div class="w-40 h-40 mx-auto rounded-full p-1 border-2 border-dashed border-cyan-400 mb-6">
-                            <div class="w-full h-full bg-gray-800 rounded-full flex items-center justify-center text-5xl">
-                                🌌
+                        <div class="w-44 h-44 rounded-full p-2 border-2 border-dashed border-cyan-400 mb-8 relative">
+                            <div class="w-full h-full bg-black rounded-full flex items-center justify-center text-6xl shadow-[0_0_50px_rgba(0,242,255,0.3)]">
+                                👨‍💻
                             </div>
                         </div>
-                        <h2 id="display-name" class="text-3xl font-black tracking-tighter">CIPHER</h2>
-                        <p class="text-cyan-500 mono text-xs mt-2 uppercase tracking-widest">Available for Hire</p>
+                        <h2 id="display-name" class="text-4xl font-black neon-title mb-2">CIPHER</h2>
+                        <p class="text-cyan-500 mono text-xs mt-2 uppercase tracking-[4px]">Status: Encrypted</p>
                         
-                        <div class="flex justify-center space-x-6 mt-8">
-                            <a href="#" class="text-2xl hover:text-cyan-400 transition"><i class="fa-brands fa-github"></i></a>
-                            <a href="https://t.me/logo_designer21" class="text-2xl hover:text-cyan-400 transition"><i class="fa-brands fa-telegram"></i></a>
-                            <a href="#" class="text-2xl hover:text-cyan-400 transition"><i class="fa-brands fa-discord"></i></a>
+                        <div class="flex justify-center space-x-6 mt-10">
+                            <a href="#" class="hover-item text-3xl text-gray-600 hover:text-white transition"><i class="fa-brands fa-github"></i></a>
+                            <a href="https://t.me/logo_designer21" class="hover-item text-3xl text-cyan-600 hover:text-cyan-300 transition"><i class="fa-brands fa-telegram"></i></a>
+                            <a href="#" class="hover-item text-3xl text-purple-600 hover:text-purple-300 transition"><i class="fa-brands fa-discord"></i></a>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="glass-panel p-8">
-                    <h4 class="font-bold mb-4 flex items-center">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-ping mr-3"></span>
-                        Project Status
-                    </h4>
-                    <ul class="space-y-4 text-sm text-gray-400">
-                        <li class="flex justify-between"><span>StudySnap</span> <span class="text-cyan-400">80%</span></li>
-                        <li class="flex justify-between"><span>Velocity Type</span> <span class="text-green-500">Done</span></li>
-                        <li class="flex justify-between"><span>Sentinel AI</span> <span class="text-purple-500">Building</span></li>
-                    </ul>
+        <hr class="neon-hr">
+
+        <section id="projects" class="grid grid-cols-1 md:grid-cols-3 gap-10 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="cyber-card p-10 group">
+                <i class="fa-solid fa-code text-4xl text-cyan-400 mb-6 group-hover:animate-pulse"></i>
+                <h3 class="neon-title text-xl mb-3">Veb Arxitektura</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Next.js va Node.js bazasida murakkab, yuqori yuklamaga chidamli va tezkor tizimlar.</p>
+                <div class="mt-6 mono text-xs text-cyan-800">> stack: react, next, node, postgres</div>
+            </div>
+            <div class="cyber-card p-10 group">
+                <i class="fa-solid fa-shield-halved text-4xl text-purple-500 mb-6 group-hover:scale-110 transition"></i>
+                <h3 class="neon-title text-xl mb-3">Kiberxavfsizlik</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Penetration testing, veb-ilovalarni zaifliklardan himoya qilish va Ethical Hacking.</p>
+                <div class="mt-6 mono text-xs text-purple-800">> tools: kali, burpsuite, nmap, owasp</div>
+            </div>
+            <div class="cyber-card p-10 group">
+                <i class="fa-solid fa-gamepad text-4xl text-green-400 mb-6 group-hover:rotate-12 transition"></i>
+                <h3 class="neon-title text-xl mb-3">O‘yin Dasturlash</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Unreal Engine 5 va C++ orqali zamonaviy o‘yinlar, server scriptlari (Minecraft/Roblox).</p>
+                <div class="mt-6 mono text-xs text-green-800">> tools: ue5, c++, lua, blender</div>
+            </div>
+        </section>
+
+        <hr class="neon-hr">
+
+        <section id="status" class="cyber-card p-10 animate__animated animate__fadeInUp animate__delay-1s">
+            <h3 class="neon-title text-2xl mb-10 flex items-center">
+                <span class="w-3 h-3 bg-cyan-500 rounded-full animate-ping mr-4"></span>
+                Loyihalar Holati // Status
+            </h3>
+            <div class="space-y-6">
+                <div>
+                    <div class="flex justify-between mono text-sm mb-2"><span>StudySnap [Wikipedia AI]</span> <span class="text-cyan-400">85% // Building</span></div>
+                    <div class="w-full h-1.5 bg-gray-900 rounded-full"><div class="h-full bg-cyan-500 rounded-full" style="width: 85%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between mono text-sm mb-2"><span>Velocity Type</span> <span class="text-green-500">100% // Done</span></div>
+                    <div class="w-full h-1.5 bg-gray-900 rounded-full"><div class="h-full bg-green-500 rounded-full" style="width: 100%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between mono text-sm mb-2"><span>Hidden Private Tool</span> <span class="text-purple-500">60% // Testing</span></div>
+                    <div class="w-full h-1.5 bg-gray-900 rounded-full"><div class="h-full bg-purple-500 rounded-full" style="width: 60%"></div></div>
                 </div>
             </div>
-        </div>
+        </section>
+
     </main>
 
-    <!-- HIDDEN ADMIN PANEL -->
+    <footer class="w-full text-center p-10 border-t border-white/5 mono text-xs text-gray-700">
+        &copy; 2026 Cipher Digital Systems. All Rights Reserved. Restricted Access area.
+    </footer>
+
     <div id="admin-panel">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="neon-text text-2xl font-bold">CORE_SYSTEM_OVERRIDE</h2>
-            <button onclick="closeAdmin()" class="text-gray-500 hover:text-white text-2xl">&times;</button>
+        <div class="flex justify-between items-center mb-10 border-b border-white/10 pb-5">
+            <h2 class="neon-title text-2xl cyan-glow">TIZIMNI TAHRIRLASH // Core Override</h2>
+            <button onclick="closeAdmin()" class="hover-item text-gray-500 hover:text-white text-3xl">&times;</button>
         </div>
         
         <div class="space-y-4">
-            <label class="text-xs text-gray-500 uppercase tracking-widest">Ismingiz</label>
-            <input type="text" id="edit-name" class="w-full bg-white/5 border border-white/10 p-3 rounded" placeholder="Ism">
+            <label class="mono text-xs text-gray-500 uppercase tracking-widest">Profilingiz nomi</label>
+            <input type="text" id="edit-name" class="admin-input" placeholder="Masalan: CIPHER">
             
-            <label class="text-xs text-gray-500 uppercase tracking-widest">Sarlavha (Katta harflarda)</label>
-            <input type="text" id="edit-title" class="w-full bg-white/5 border border-white/10 p-3 rounded" placeholder="Sarlavha">
+            <label class="mono text-xs text-gray-500 uppercase tracking-widest">Men haqimda (Malumot)</label>
+            <textarea id="edit-about" rows="5" class="admin-input" placeholder="Malumot..."></textarea>
             
-            <label class="text-xs text-gray-500 uppercase tracking-widest">Men haqimda</label>
-            <textarea id="edit-about" rows="4" class="w-full bg-white/5 border border-white/10 p-3 rounded" placeholder="Malumot..."></textarea>
+            <label class="mono text-xs text-gray-500 uppercase tracking-widest">Ko'nikmalar (Vergul bilan ajrating)</label>
+            <input type="text" id="edit-skills" class="admin-input" placeholder="React, Node, Cybersecurity">
             
-            <label class="text-xs text-gray-500 uppercase tracking-widest">Ko'nikmalar (vergul bilan ajrating)</label>
-            <input type="text" id="edit-skills" class="w-full bg-white/5 border border-white/10 p-3 rounded" placeholder="React, Node, Cyber">
-            
-            <button onclick="saveChanges()" class="btn-save w-full mt-6">TIZIMNI YANGILASH (SAVE)</button>
+            <button onclick="saveChanges()" class="btn-save-cyber mt-10 hover-item">TIZIMNI YANGILASH (DEPLOY)</button>
         </div>
     </div>
 
     <script>
-        // --- Core Data Logic ---
-        let portfolioData = JSON.parse(localStorage.getItem('cipher_data')) || {
+        // --- Core Data Logic (localStorage) ---
+        let portfolioData = JSON.parse(localStorage.getItem('cipher_dark_data')) || {
             name: "CIPHER",
-            title: "KOD VA DIZAYN",
-            about: "Men 8-sinf o'quvchisi bo'lsam-da, Full-stack yo'nalishida professional loyihalar ustida ishlayman. Cybersecurity va UI/UX dizaynning kesishgan nuqtasida \"Premium\" mahsulotlar yaratish men uchun asosiy maqsad.",
-            skills: ["React", "Next.js", "Tailwind", "Node.js", "PostgreSQL", "Cybersecurity", "UE5"]
+            about: "Men 8-sinf o'quvchisi bo'lsam-da, Full-stack dasturlash va kiberxavfsizlik olamida professional tajribaga egaman. Mening maqsadim - \"Premium Ultra-Dark\" dizaynli loyihalar orqali brendingizni professionallar kabi internetga olib chiqish.",
+            skills: ["React", "Next.js", "Node.js", "PostgreSQL", "Tailwind", "Cybersecurity", "UE5", "C++"]
         };
 
+        // UI ni yangilash funksiyasi
         function updateUI() {
             document.getElementById('display-name').innerText = portfolioData.name;
-            document.getElementById('display-title').innerText = portfolioData.title;
             document.getElementById('display-about').innerText = portfolioData.about;
             
+            // Skills tags yuklash
             const skillsDiv = document.getElementById('display-skills');
             skillsDiv.innerHTML = '';
             portfolioData.skills.forEach(s => {
                 skillsDiv.innerHTML += `<span class="skill-tag">${s}</span>`;
             });
 
-            // Set Inputs
+            // Admin panel inputlarini to'ldirish
             document.getElementById('edit-name').value = portfolioData.name;
-            document.getElementById('edit-title').value = portfolioData.title;
             document.getElementById('edit-about').value = portfolioData.about;
             document.getElementById('edit-skills').value = portfolioData.skills.join(', ');
         }
 
+        // O'zgarishlarni saqlash funksiyasi
         function saveChanges() {
             portfolioData.name = document.getElementById('edit-name').value;
-            portfolioData.title = document.getElementById('edit-title').value;
             portfolioData.about = document.getElementById('edit-about').value;
             portfolioData.skills = document.getElementById('edit-skills').value.split(',').map(s => s.trim());
 
-            localStorage.setItem('cipher_data', JSON.stringify(portfolioData));
+            localStorage.setItem('cipher_dark_data', JSON.stringify(portfolioData));
             updateUI();
             
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#00f2ff', '#7000ff']
+            Swal.fire({
+                title: 'DEPLOY SUCCESS!',
+                text: 'Tizim ma\'lumotlari yangilandi.',
+                icon: 'success',
+                background: '#0a0a0a',
+                color: '#fff',
+                confirmButtonColor: '#00f2ff',
+                confirmButtonText: 'OK'
             });
             
             setTimeout(closeAdmin, 500);
         }
 
-        // --- Hidden Admin Trigger ---
-        // Klaviaturadan 'admin' deb yozsangiz panel ochiladi
+        // --- Hidden Admin Trigger Logic ---
+        // Klaviaturadan 'cipher' deb yozsangiz panel ochiladi
         let keyBuffer = "";
         window.addEventListener('keydown', (e) => {
             keyBuffer += e.key.toLowerCase();
-            if (keyBuffer.includes("admin")) {
+            if (keyBuffer.includes("cipher")) {
                 document.getElementById('admin-panel').classList.add('active');
                 keyBuffer = "";
             }
-            if (keyBuffer.length > 10) keyBuffer = "";
+            if (keyBuffer.length > 10) keyBuffer = ""; // Buffer tozalash
         });
 
         function closeAdmin() {
             document.getElementById('admin-panel').classList.remove('active');
         }
 
-        function toggleAdminPrompt() {
-            alert("ADMIN PANELga kirish uchun klaviaturada 'admin' so'zini tering.");
+        function showAdminHint() {
+            Swal.fire({
+                title: 'RESTRICTED AREA',
+                text: 'Admin panelga kirish uchun maxsus kalit so\'zni klaviaturada tering.',
+                icon: 'warning',
+                background: '#000',
+                color: '#fff',
+                confirmButtonColor: '#a020f0'
+            });
         }
 
-        // --- Custom Cursor Logic ---
-        const cursor = document.getElementById('cursor');
+        // --- Premium Custom Cursor Logic ---
+        const cursor = document.getElementById('custom-cursor');
         window.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // --- Background Canvas Particles ---
-        const canvas = document.getElementById('bg-canvas');
+        // Hover effect for cursor
+        document.querySelectorAll('a, button, .hover-item, .cyber-card').forEach(item => {
+            item.addEventListener('mouseover', () => cursor.classList.add('hover'));
+            item.addEventListener('mouseout', () => cursor.classList.remove('hover'));
+        });
+
+        // --- Matrix Code Background Effect ---
+        const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-        let particles = [];
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        let columns = Math.floor(width / 20);
+        const drops = [];
+        const charSet = "01アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン";
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y > canvas.height) this.y = 0;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(0, 242, 255, 0.2)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+        for (let i = 0; i < columns; i++) drops[i] = 1;
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#0F0'; // Yashil kodlar
+            ctx.font = '15px Share Tech Mono';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charSet[Math.floor(Math.random() * charSet.length)];
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                
+                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
             }
         }
 
-        function initParticles() {
-            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        function animateMatrix() {
+            drawMatrix();
+            requestAnimationFrame(animateMatrix);
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
+        animateMatrix();
 
-        initParticles();
-        animate();
+        // --- Typed.js Effect (Premium Title) ---
+        new Typed('#typed-text', {
+            strings: ['HAQIQATGA AYLANTIRAMAN.', 'XAVFSIZ QILAMAN.', 'PREMIUM DARAJAGA OLIB CHIQAMAN.'],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true,
+            colors: ['#00f2ff']
+        });
+
+        // Dastlabki yuklash
         updateUI();
     </script>
 </body>
