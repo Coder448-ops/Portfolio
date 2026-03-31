@@ -3,421 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quvonchbek Raximboyev | Full-Stack Developer & Designer</title>
+    <title>Cipher | Quvonchbek Raximboyev | Elite Node</title>
     
-    <!-- External Assets & Fonts -->
+    <!-- Power Stack -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&family=JetBrains+Mono:wght@300;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* --- ADVANCED CSS VARIABLES --- */
         :root {
             --accent: #00ff88;
-            --accent-glow: rgba(0, 255, 136, 0.3);
-            --bg-master: #020202;
-            --bg-card: rgba(10, 10, 10, 0.8);
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --text-primary: #f5f5f5;
-            --text-secondary: #888888;
-            --transition-main: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --bg: #000000;
+            --surface: #0a0a0a;
+            --border: rgba(0, 255, 136, 0.1);
         }
 
-        /* --- GLOBAL RESET & TYPOGRAPHY --- */
         * {
             margin: 0; padding: 0; box-sizing: border-box;
-            outline: none; scroll-behavior: smooth;
+            cursor: none; /* Custom cursor ishlatamiz */
         }
 
         body {
-            background-color: var(--bg-master);
-            color: var(--text-primary);
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .mono { font-family: 'JetBrains Mono', monospace; }
-
-        /* --- CUSTOM SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--bg-master); }
-        ::-webkit-scrollbar-thumb { 
-            background: linear-gradient(var(--bg-master), var(--accent), var(--bg-master)); 
-            border-radius: 20px;
+        /* --- MATRIX CANVAS --- */
+        #matrix {
+            position: fixed; inset: 0; z-index: -1; opacity: 0.15;
         }
 
-        /* --- COMPONENT STYLES --- */
-        .glass-morphism {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle);
-            transition: var(--transition-main);
+        /* --- CUSTOM CURSOR --- */
+        #cursor {
+            width: 20px; height: 20px; border: 1px solid var(--accent);
+            border-radius: 50%; position: fixed; pointer-events: none;
+            z-index: 99999; transition: transform 0.1s;
         }
 
-        .glass-morphism:hover {
-            border-color: var(--accent);
-            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
-            transform: translateY(-8px) scale(1.01);
-        }
+        /* --- UTILITIES --- */
+        .sync { font-family: 'Syncopate', sans-serif; }
+        .neon-border { border: 1px solid var(--border); box-shadow: 0 0 15px rgba(0, 255, 136, 0.05); }
+        .neon-text { text-shadow: 0 0 10px var(--accent); }
 
-        .icon-box {
-            width: 50px; height: 50px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 12px; background: rgba(255,255,255,0.03);
-            color: var(--accent); font-size: 1.4rem;
-            margin-bottom: 25px; transition: var(--transition-main);
-        }
-
-        .glass-morphism:hover .icon-box {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        /* --- ANIMATED BACKGROUND GRID --- */
-        .cyber-grid {
-            position: fixed; inset: 0;
-            background-image: 
-                linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: -1; pointer-events: none;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-        }
-
-        /* --- ADMIN CONSOLE UI --- */
+        /* --- HIDDEN CONSOLE --- */
         #admin-panel {
-            position: fixed; top: 0; right: 0; bottom: 0;
-            width: 450px; background: #080808; z-index: 10001;
-            box-shadow: -20px 0 60px rgba(0,0,0,0.8);
-            border-left: 1px solid var(--accent);
-            display: none; padding: 40px; overflow-y: auto;
+            position: fixed; top: 0; right: -500px; width: 500px; height: 100vh;
+            background: rgba(5, 5, 5, 0.98); border-left: 2px solid var(--accent);
+            z-index: 10000; padding: 50px; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
         }
 
-        .admin-input-group { margin-bottom: 25px; }
-        .admin-input-group label {
-            display: block; font-size: 10px; color: var(--text-secondary);
-            margin-bottom: 8px; font-weight: bold; text-transform: uppercase;
-            letter-spacing: 2px;
+        .admin-open { right: 0 !important; }
+
+        .field-group { margin-bottom: 25px; }
+        .field-label { font-[10px]; color: #444; margin-bottom: 8px; display: block; letter-spacing: 2px; }
+        .field-input { 
+            width: 100%; background: #000; border: 1px solid #1a1a1a; 
+            padding: 15px; color: var(--accent); font-size: 13px;
         }
+        .field-input:focus { border-color: var(--accent); }
 
-        .admin-field {
-            width: 100%; background: #111; border: 1px solid #222;
-            padding: 14px; color: var(--accent); font-family: 'JetBrains Mono';
-            border-radius: 6px; font-size: 13px; transition: 0.3s;
+        /* --- PROJECT CARDS --- */
+        .card {
+            background: var(--surface); border: 1px solid #111;
+            padding: 40px; transition: 0.5s; position: relative; overflow: hidden;
         }
-
-        .admin-field:focus { border-color: var(--accent); background: #000; }
-
-        /* --- GLITCH & TEXT EFFECTS --- */
-        .reveal-text {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 3px solid var(--accent);
-            animation: typing 3s steps(30, end), blink .75s step-end infinite;
+        .card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,136,0.05), transparent);
+            transition: 0.5s;
         }
+        .card:hover::before { left: 100%; }
+        .card:hover { border-color: var(--accent); transform: translateY(-10px); }
 
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink { from, to { border-color: transparent } 50% { border-color: var(--accent) } }
-
-        /* --- SECTION PADDING --- */
-        section { padding: 140px 8%; min-height: 100vh; }
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 2px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
 
     </style>
 </head>
 <body>
 
-    <div class="cyber-grid"></div>
+    <canvas id="matrix"></canvas>
+    <div id="cursor"></div>
 
     <!-- PRELOADER -->
-    <div id="loader" class="fixed inset-0 bg-black z-[20000] flex flex-col items-center justify-center">
-        <div class="relative w-24 h-24 mb-8">
-            <div class="absolute inset-0 border-t-2 border-b-2 border-[#00ff88] rounded-full animate-spin"></div>
-            <div class="absolute inset-2 border-l-2 border-r-2 border-zinc-800 rounded-full animate-spin-reverse"></div>
-            <i class="fas fa-bolt absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#00ff88]"></i>
+    <div id="loader" class="fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center">
+        <div class="mb-4 sync text-[10px] tracking-[10px] animate-pulse">DECRYPTING_SYSTEM</div>
+        <div class="w-64 h-[1px] bg-zinc-900 relative">
+            <div id="load-bar" class="absolute inset-y-0 left-0 bg-[#00ff88]" style="width: 0%"></div>
         </div>
-        <div class="mono text-[10px] tracking-[6px] text-zinc-600 uppercase" id="load-info">Initializing_Kernel</div>
+        <div class="mt-4 text-[8px] opacity-30 uppercase tracking-[5px]" id="load-status">Mounting_Volumes...</div>
     </div>
 
-    <!-- NAV BAR -->
-    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-[5000]">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-[#00ff88] text-black flex items-center justify-center font-black rounded-lg">QR</div>
-            <span class="font-bold tracking-[4px] text-xs opacity-50">NODE_v5.0</span>
-        </div>
-        <div class="flex gap-10 items-center">
-            <a href="#about" class="mono text-[10px] hover:text-[#00ff88] transition tracking-[3px]">BIO</a>
-            <a href="#projects" class="mono text-[10px] hover:text-[#00ff88] transition tracking-[3px]">STACK</a>
-            <a href="#contact" class="mono text-[10px] hover:text-[#00ff88] transition tracking-[3px]">COMM</a>
-            <div class="h-4 w-[1px] bg-zinc-800"></div>
-            <button onclick="checkAccess()" class="text-zinc-600 hover:text-[#00ff88]"><i class="fas fa-fingerprint text-lg"></i></button>
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 w-full p-10 flex justify-between items-center z-50">
+        <div class="sync font-bold text-lg tracking-[-2px] hover:neon-text transition">CIPHER<span class="text-[#00ff88]">_</span></div>
+        <div class="flex gap-12 items-center">
+            <a href="#projects" class="text-[10px] tracking-[4px] hover:text-[#00ff88] transition">ARCHIVE</a>
+            <a href="#contact" class="text-[10px] tracking-[4px] hover:text-[#00ff88] transition">COMMMS</a>
+            <div id="security-btn" class="w-10 h-10 border border-zinc-900 flex items-center justify-center hover:border-[#00ff88] transition opacity-20 hover:opacity-100">
+                <i class="fas fa-fingerprint"></i>
+            </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section id="hero" class="flex flex-col justify-center items-start">
-        <div class="max-w-5xl">
-            <div class="flex items-center gap-3 mb-8">
-                <span class="w-12 h-[1px] bg-[#00ff88]"></span>
-                <span class="mono text-[#00ff88] text-xs tracking-[5px]">FULL_STACK_ARCHITECT</span>
+    <!-- HERO -->
+    <section class="min-h-screen flex flex-col justify-center px-[10%]">
+        <div class="max-w-6xl">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-2 h-2 bg-[#00ff88] rounded-full animate-ping"></div>
+                <span class="text-[10px] tracking-[8px] opacity-40">SYSTEM_OPERATOR_v8.0</span>
             </div>
-            <h1 id="hero-name" class="text-7xl md:text-[9rem] font-black leading-[0.85] tracking-tighter mb-10">
-                QUVONCHBEK<br><span class="text-zinc-900 stroke-text">RAXIMBOYEV</span>
+            <h1 id="hero-name" class="sync text-6xl md:text-[8rem] font-black leading-none mb-12 tracking-tighter">
+                QUVONCHBEK<br>RAXIMBOYEV
             </h1>
-            <p id="hero-bio" class="text-zinc-500 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12">
-                Men o'ta yuqori darajadagi interfeyslar va xavfsiz backend tizimlar yaratuvchi 8-sinf o'quvchisi va muhandisiman.
+            <p id="hero-bio" class="text-zinc-500 text-lg md:text-2xl max-w-3xl leading-relaxed mb-16">
+                Full-stack developer, UI/UX designer va kiberxavfsizlik mutaxassisi. 8-sinf o'quvchisi bo'lishimga qaramay, murakkab raqamli tizimlarni noldan qura olaman.
             </p>
-            <div class="flex flex-wrap gap-6">
-                <a href="#projects" class="px-10 py-5 bg-[#00ff88] text-black font-black mono text-xs tracking-widest hover:shadow-[0_0_30px_#00ff88] transition">VIEW_PROJECTS_01</a>
-                <a href="#contact" class="px-10 py-5 border border-zinc-800 hover:border-[#00ff88] mono text-xs tracking-widest transition">CONTACT_CORE</a>
+            <div class="flex gap-10">
+                <a href="#projects" class="px-12 py-6 bg-zinc-900 border border-zinc-800 hover:border-[#00ff88] hover:text-[#00ff88] transition text-[10px] tracking-[5px] font-bold">PROJECTS_LOG</a>
+                <div class="flex items-center gap-4 opacity-20">
+                    <div class="w-12 h-[1px] bg-white"></div>
+                    <span class="text-[8px] tracking-[5px]">ENCRYPTED_DATA</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- FEATURES & STATS -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="glass-morphism p-10">
-            <div class="icon-box"><i class="fas fa-code"></i></div>
-            <h3 class="text-xl font-bold mb-4">Development</h3>
-            <p class="text-zinc-500 text-sm leading-relaxed">React, Node.js va C++ tillarida mukammal kodlash va tizim arxitekturasini loyihalash.</p>
+    <!-- STATISTICS (HIDDEN UNTIL SCROLL) -->
+    <section class="py-40 px-[10%] grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="card">
+            <i class="fas fa-terminal mb-6 text-[#00ff88]"></i>
+            <div class="text-4xl font-black mb-2" id="stat-1">15+</div>
+            <div class="text-[9px] tracking-[3px] text-zinc-600 uppercase">Deployed Nodes</div>
         </div>
-        <div class="glass-morphism p-10">
-            <div class="icon-box"><i class="fas fa-shield-halved"></i></div>
-            <h3 class="text-xl font-bold mb-4">Cyber Security</h3>
-            <p class="text-zinc-500 text-sm leading-relaxed">Tizimlarni pentesting qilish va Black-Hat hujumlaridan himoyalash strategiyalari.</p>
+        <div class="card">
+            <i class="fas fa-shield-virus mb-6 text-[#00ff88]"></i>
+            <div class="text-4xl font-black mb-2">99%</div>
+            <div class="text-[9px] tracking-[3px] text-zinc-600 uppercase">Protection Rate</div>
         </div>
-        <div class="glass-morphism p-10">
-            <div class="icon-box"><i class="fas fa-vial"></i></div>
-            <h3 class="text-xl font-bold mb-4">UI/UX Design</h3>
-            <p class="text-zinc-500 text-sm leading-relaxed">Figma va Adobe Suite orqali premium, cinematic va modern dizaynlar yaratish.</p>
+        <div class="card">
+            <i class="fas fa-code-branch mb-6 text-[#00ff88]"></i>
+            <div class="text-4xl font-black mb-2" id="stat-2">3k+</div>
+            <div class="text-[9px] tracking-[3px] text-zinc-600 uppercase">Commits / Year</div>
+        </div>
+        <div class="card">
+            <i class="fas fa-microchip mb-6 text-[#00ff88]"></i>
+            <div class="text-4xl font-black mb-2">RTX 3050</div>
+            <div class="text-[9px] tracking-[3px] text-zinc-600 uppercase">Hardware ID</div>
         </div>
     </section>
 
-    <!-- PROJECTS ARCHIVE -->
-    <section id="projects">
-        <div class="flex justify-between items-end mb-20">
-            <div>
-                <h2 class="text-5xl font-black tracking-tighter mb-4">SELECTED_ARCHIVE</h2>
-                <p class="text-zinc-600 mono text-xs">// LOADING REAL-TIME PROJECTS FROM DATABASE</p>
-            </div>
-            <div class="text-6xl font-black text-zinc-900">026</div>
+    <!-- PROJECT SECTION -->
+    <section id="projects" class="py-40 px-[10%]">
+        <div class="mb-32 flex justify-between items-end">
+            <h2 class="sync text-4xl font-bold tracking-widest">FILES<span class="text-[#00ff88]">.</span>ARC</h2>
+            <span class="text-[10px] opacity-20">ACCESS_LEVEL: MASTER</span>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <!-- P1 -->
-            <div class="group glass-morphism overflow-hidden relative">
-                <div class="p-12">
-                    <div class="flex justify-between mb-10">
-                        <i class="fas fa-brain text-4xl text-[#00ff88]"></i>
-                        <span class="mono text-[10px] text-zinc-600">v1.2.0</span>
+            <div class="card group">
+                <div class="flex justify-between items-start mb-12">
+                    <div class="w-16 h-16 bg-zinc-950 flex items-center justify-center border border-zinc-900 group-hover:border-[#00ff88] transition">
+                        <i class="fas fa-brain text-2xl text-zinc-800 group-hover:text-[#00ff88]"></i>
                     </div>
-                    <h4 class="text-3xl font-bold mb-4">StudySnap AI</h4>
-                    <p class="text-zinc-500 text-sm mb-10">AI-powered homework solver using custom LLM integration and React frontend.</p>
-                    <div class="flex gap-4">
-                        <span class="px-3 py-1 bg-white/5 rounded text-[10px] mono">NODE.JS</span>
-                        <span class="px-3 py-1 bg-white/5 rounded text-[10px] mono">PYTHON</span>
-                    </div>
+                    <span class="text-[10px] opacity-30">#001</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">StudySnap AI</h3>
+                <p class="text-zinc-500 text-sm mb-10 leading-relaxed">AI-based solver platform for automated homework assistance. Built with React and specialized AI integration.</p>
+                <div class="flex gap-4">
+                    <span class="text-[10px] text-[#00ff88]">NODE.JS</span>
+                    <span class="text-[10px] text-[#00ff88]">OPENAI</span>
                 </div>
             </div>
-            <!-- P2 -->
-            <div class="group glass-morphism overflow-hidden relative">
-                <div class="p-12">
-                    <div class="flex justify-between mb-10">
-                        <i class="fas fa-keyboard text-4xl text-[#00ff88]"></i>
-                        <span class="mono text-[10px] text-zinc-600">v0.9.5</span>
+            <div class="card group">
+                <div class="flex justify-between items-start mb-12">
+                    <div class="w-16 h-16 bg-zinc-950 flex items-center justify-center border border-zinc-900 group-hover:border-[#00ff88] transition">
+                        <i class="fas fa-bolt text-2xl text-zinc-800 group-hover:text-[#00ff88]"></i>
                     </div>
-                    <h4 class="text-3xl font-bold mb-4">Velocity Type</h4>
-                    <p class="text-zinc-500 text-sm mb-10">High-performance typing engine integrated with Wikipedia API for real data tests.</p>
-                    <div class="flex gap-4">
-                        <span class="px-3 py-1 bg-white/5 rounded text-[10px] mono">REACT</span>
-                        <span class="px-3 py-1 bg-white/5 rounded text-[10px] mono">API</span>
-                    </div>
+                    <span class="text-[10px] opacity-30">#002</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Velocity Type</h3>
+                <p class="text-zinc-500 text-sm mb-10 leading-relaxed">High-performance typing test engine with real-time Wikipedia data fetching.</p>
+                <div class="flex gap-4">
+                    <span class="text-[10px] text-[#00ff88]">REACT</span>
+                    <span class="text-[10px] text-[#00ff88]">REST_API</span>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- CONTACT FORM -->
-    <section id="contact" class="flex flex-col items-center text-center">
-        <div class="glass-morphism p-20 max-w-4xl w-full relative">
-            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-[#00ff88] rounded-2xl flex items-center justify-center text-black shadow-[0_0_40px_rgba(0,255,136,0.5)]">
-                <i class="fas fa-paper-plane text-2xl"></i>
-            </div>
-            <h2 class="text-4xl font-black mb-6 mt-4 uppercase">Initialize Connection</h2>
-            <p class="text-zinc-500 mb-12">Yangi loyihalar yoki hamkorlik uchun tizimga xabar yuboring.</p>
-            
-            <form id="contact-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                <div class="admin-input-group">
-                    <label>Identity Name</label>
-                    <input type="text" class="admin-field" placeholder="John Doe">
-                </div>
-                <div class="admin-input-group">
-                    <label>Communication Email</label>
-                    <input type="email" class="admin-field" placeholder="john@example.com">
-                </div>
-                <div class="admin-input-group md:col-span-2">
-                    <label>Encrypted Message</label>
-                    <textarea class="admin-field" rows="5" placeholder="Your project details..."></textarea>
-                </div>
-                <button type="submit" class="md:col-span-2 py-5 bg-white text-black font-black mono text-xs tracking-[10px] hover:bg-[#00ff88] transition-all">TERMINAL_SEND</button>
-            </form>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="p-20 border-t border-zinc-900 flex flex-col items-center">
-        <div class="flex gap-8 mb-10">
-            <a href="https://github.com/Coder448-ops" class="text-2xl text-zinc-700 hover:text-[#00ff88] transition"><i class="fab fa-github"></i></a>
-            <a href="https://telegram.me/logo_designer21" class="text-2xl text-zinc-700 hover:text-[#00ff88] transition"><i class="fab fa-telegram"></i></a>
-            <a href="#" class="text-2xl text-zinc-700 hover:text-[#00ff88] transition"><i class="fab fa-discord"></i></a>
+    <footer class="p-20 text-center border-t border-zinc-900">
+        <div class="mb-10 flex justify-center gap-10">
+            <a href="https://github.com/Coder448-ops" class="text-zinc-800 hover:text-[#00ff88] transition text-xl"><i class="fab fa-github"></i></a>
+            <a href="#" class="text-zinc-800 hover:text-[#00ff88] transition text-xl"><i class="fab fa-discord"></i></a>
+            <a href="https://t.me/logo_designer21" class="text-zinc-800 hover:text-[#00ff88] transition text-xl"><i class="fab fa-telegram"></i></a>
         </div>
-        <div class="mono text-[9px] tracking-[15px] text-zinc-800 uppercase">System Integrity Stable // 2026</div>
+        <p class="text-[8px] tracking-[10px] opacity-20 uppercase">All rights reserved // Cipher Protocol // 2026</p>
     </footer>
 
-    <!-- HIDDEN ADMIN OVERLAY -->
+    <!-- ADMIN CONSOLE OVERLAY (THE HIDDEN BRAIN) -->
     <div id="admin-panel">
-        <div class="flex justify-between items-center mb-12">
-            <h2 class="mono text-[#00ff88] text-sm">>> CONSOLE_OVERRIDE</h2>
-            <button onclick="toggleAdmin()" class="text-zinc-600 hover:text-white"><i class="fas fa-times"></i></button>
+        <div class="flex justify-between items-center mb-20">
+            <div class="sync text-[#00ff88] text-xs">>> MASTER_OVERRIDE</div>
+            <button onclick="closeAdmin()" class="text-zinc-700 hover:text-white"><i class="fas fa-times"></i></button>
         </div>
 
-        <div class="admin-input-group">
-            <label><i class="fas fa-user-tag mr-2"></i> MASTER_NAME</label>
-            <input type="text" id="adm-name" class="admin-field">
+        <div class="field-group">
+            <label class="field-label">CORE_IDENTITY_NAME</label>
+            <input type="text" id="adm-name" class="field-input">
         </div>
 
-        <div class="admin-input-group">
-            <label><i class="fas fa-terminal mr-2"></i> SYSTEM_BIO</label>
-            <textarea id="adm-bio" class="admin-field" rows="5"></textarea>
+        <div class="field-group">
+            <label class="field-label">BIO_ENCRYPTION_TEXT</label>
+            <textarea id="adm-bio" class="field-input" rows="6"></textarea>
         </div>
 
-        <div class="admin-input-group">
-            <label><i class="fas fa-palette mr-2"></i> ACCENT_COLOR</label>
+        <div class="field-group">
+            <label class="field-label">THEME_ACCENT_HEX</label>
             <input type="color" id="adm-color" class="w-full h-12 bg-transparent border-none cursor-pointer">
         </div>
 
-        <div class="admin-input-group">
-            <label><i class="fas fa-chart-line mr-2"></i> PROJECT_STAT_OVERRIDE</label>
-            <input type="text" id="adm-stat" class="admin-field" placeholder="e.g. 25+ Completed">
+        <div class="field-group">
+            <label class="field-label">STAT_1_VALUE</label>
+            <input type="text" id="adm-stat1" class="field-input">
         </div>
 
-        <button onclick="saveChanges()" class="w-full py-5 bg-[#00ff88] text-black font-black mono text-xs tracking-widest mt-10 hover:bg-white transition-all">EXECUTE_PATCH_v5.0</button>
+        <button onclick="saveChanges()" class="w-full py-6 bg-zinc-900 border border-[#00ff88] text-[#00ff88] font-bold text-[10px] tracking-[5px] mt-10 hover:bg-[#00ff88] hover:text-black transition-all">INITIALIZE_REWRITE</button>
         
-        <div class="mt-10 p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
-            <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-info-circle text-[#00ff88] text-xs"></i>
-                <span class="mono text-[9px] text-zinc-500 uppercase">System_Log</span>
-            </div>
-            <p class="mono text-[9px] text-zinc-700 leading-relaxed">
-                Changes will be synced to LocalStorage. Hardware ID: ASUS-TUF-F15-RTX3050. Encryption: ACTIVE.
-            </p>
+        <div class="mt-20 opacity-10 text-[8px] leading-relaxed">
+            SYSTEM_ID: ASUS_TUF_F15_XORAZM<br>
+            LOCATION: SHOVOT_DISTRICT<br>
+            PROTOCOL: ZERO_FOOTPRINT_ENFORCED
         </div>
     </div>
 
-    <!-- MAIN ENGINE SCRIPTS -->
+    <!-- SCRIPTS -->
     <script>
-        // 1. DATA KERNEL (PERSISTENT)
-        let core = JSON.parse(localStorage.getItem('qr_master_db')) || {
-            name: "QUVONCHBEK<br><span class='text-zinc-900'>RAXIMBOYEV</span>",
-            bio: "Men o'ta yuqori darajadagi interfeyslar va xavfsiz backend tizimlar yaratuvchi 8-sinf o'quvchisi va muhandisiman.",
+        // 1. DATA KERNEL
+        let data = JSON.parse(localStorage.getItem('cipher_vault')) || {
+            name: "QUVONCHBEK<br>RAXIMBOYEV",
+            bio: "Full-stack developer, UI/UX designer va kiberxavfsizlik mutaxassisi. 8-sinf o'quvchisi bo'lishimga qaramay, murakkab raqamli tizimlarni noldan qura olaman.",
             accent: "#00ff88",
-            stat: "15+"
+            stat1: "15+"
         };
 
-        function sync() {
-            document.getElementById('hero-name').innerHTML = core.name;
-            document.getElementById('hero-bio').innerText = core.bio;
-            document.documentElement.style.setProperty('--accent', core.accent);
+        function refresh() {
+            document.getElementById('hero-name').innerHTML = data.name;
+            document.getElementById('hero-bio').innerText = data.bio;
+            document.getElementById('stat-1').innerText = data.stat1;
+            document.documentElement.style.setProperty('--accent', data.accent);
             
-            // Sync Admin Inputs
-            document.getElementById('adm-name').value = core.name.replace("<br><span class='text-zinc-900'>", " ").replace("</span>", "");
-            document.getElementById('adm-bio').value = core.bio;
-            document.getElementById('adm-color').value = core.accent;
-            document.getElementById('adm-stat').value = core.stat;
+            // Sync Admin
+            document.getElementById('adm-name').value = data.name.replace('<br>', ' ');
+            document.getElementById('adm-bio').value = data.bio;
+            document.getElementById('adm-color').value = data.accent;
+            document.getElementById('adm-stat1').value = data.stat1;
         }
 
-        // 2. PRELOADER ENGINE
-        let p = 0;
-        const loaderInt = setInterval(() => {
-            p += Math.random() * 25;
-            if (p >= 100) {
-                p = 100;
-                clearInterval(loaderInt);
-                gsap.to("#loader", { y: '-100%', duration: 1.2, ease: "expo.inOut", delay: 0.5 });
-            }
-            document.getElementById('load-info').innerText = `Loading_Data_${Math.floor(p)}%`;
-        }, 120);
+        // 2. MATRIX RAIN EFFECT
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^";
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
 
-        // 3. STEALTH ACCESS HANDLER
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = data.accent;
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        // 3. STEALTH ACCESS (CIPHER KEY)
         let keys = [];
-        const pass = [67, 73, 80, 72, 69, 82]; // "CIPHER" Keycodes
+        const combo = [67, 73, 80, 72, 69, 82]; // C-I-P-H-E-R
 
         window.addEventListener('keydown', (e) => {
             keys.push(e.keyCode);
             keys = keys.slice(-6);
-            if (JSON.stringify(keys) === JSON.stringify(pass)) {
-                toggleAdmin();
-                keys = [];
+            if (JSON.stringify(keys) === JSON.stringify(combo)) {
+                document.getElementById('admin-panel').classList.add('admin-open');
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: [data.accent] });
             }
         });
 
-        function toggleAdmin() {
-            const panel = document.getElementById('admin-panel');
-            const isOff = panel.style.display === 'none' || panel.style.display === '';
-            
-            if (isOff) {
-                panel.style.display = 'block';
-                gsap.from(panel, { x: 450, duration: 0.8, ease: "power4.out" });
-            } else {
-                gsap.to(panel, { x: 450, duration: 0.6, onComplete: () => panel.style.display = 'none' });
-            }
-        }
-
-        function checkAccess() {
-            Swal.fire({
-                title: 'PROTECTED_NODE',
-                text: 'Klaviatura orqali CIPHER kodini kiriting.',
-                icon: 'warning',
-                background: '#080808',
-                color: '#fff',
-                confirmButtonColor: core.accent
-            });
+        function closeAdmin() {
+            document.getElementById('admin-panel').classList.remove('admin-open');
         }
 
         function saveChanges() {
-            const nameVal = document.getElementById('adm-name').value.split(" ");
-            core.name = `${nameVal[0]}<br><span class='text-zinc-900'>${nameVal.slice(1).join(" ")}</span>`;
-            core.bio = document.getElementById('adm-bio').value;
-            core.accent = document.getElementById('adm-color').value;
-            core.stat = document.getElementById('adm-stat').value;
+            const n = document.getElementById('adm-name').value.split(" ");
+            data.name = `${n[0]}<br>${n.slice(1).join(" ")}`;
+            data.bio = document.getElementById('adm-bio').value;
+            data.accent = document.getElementById('adm-color').value;
+            data.stat1 = document.getElementById('adm-stat1').value;
 
-            localStorage.setItem('qr_master_db', JSON.stringify(core));
-            sync();
-            toggleAdmin();
-            
-            Swal.fire({
-                title: 'PATCH_APPLIED',
-                text: 'Tizim muvaffaqiyatli yangilandi.',
-                icon: 'success',
-                background: '#080808',
-                color: '#00ff88',
-                confirmButtonColor: core.accent
-            });
+            localStorage.setItem('cipher_vault', JSON.stringify(data));
+            refresh();
+            closeAdmin();
         }
 
-        // 4. MOUSE INTERACTION (DYNAMIC PARALLAX)
+        // 4. CURSOR ENGINE
         document.addEventListener('mousemove', (e) => {
-            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
-            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
-            gsap.to(".cyber-grid", { x: moveX * 2, y: moveY * 2, duration: 2 });
+            gsap.to("#cursor", { x: e.clientX - 10, y: e.clientY - 10, duration: 0.1 });
         });
 
-        // Initialize Core
-        sync();
+        // 5. SECURITY BUTTON (STEALTH MODE)
+        document.getElementById('security-btn').addEventListener('click', () => {
+            gsap.to("body", { opacity: 0.1, duration: 0.1, yoyo: true, repeat: 5 });
+            console.warn("ACCESS_DENIED: UNAUTHORIZED_FINGERPRINT");
+        });
 
+        // 6. LOADER
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                gsap.to("#loader", { y: "-100%", duration: 1, ease: "power4.inOut", delay: 0.5 });
+            }
+            document.getElementById('load-bar').style.width = progress + "%";
+            document.getElementById('load-status').innerText = `Injecting_Module_${Math.floor(progress)}%`;
+        }, 100);
+
+        refresh();
     </script>
 </body>
 </html>
